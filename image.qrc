@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resizeApi.png</file>
+    </qresource>
+</RCC>

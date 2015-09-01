@@ -5,11 +5,13 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += webkitwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = chinasoDestopTool
 TEMPLATE = app
+
 
 
 SOURCES += main.cpp\
@@ -18,3 +20,9 @@ SOURCES += main.cpp\
 HEADERS  += dialog.h
 
 FORMS    += dialog.ui
+
+RESOURCES += \
+    image.qrc
+
+
+include(qxtglobalshortcut5/qxt.pri)
