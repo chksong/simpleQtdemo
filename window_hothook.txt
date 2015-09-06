@@ -1,0 +1,66 @@
+LRESULT CALLBACK Hotkey_Filter(int nCode, WPARAM wParam, LPARAM lParam)
+{
+
+    KBDLLHOOKSTRUCT *Key_Info = (KBDLLHOOKSTRUCT*)lParam;
+    if (HC_ACTION == nCode)
+    {
+        if (WM_KEYDOWN == wParam || WM_SYSKEYDOWN)  //如果按键为按下状态
+        {
+
+            if (Key_Info->vkCode == VK_LWIN || Key_Info->vkCode == VK_RWIN) //屏敝 WIN(左右) 键
+            {
+                return TRUE; 
+            }
+
+            if (Key_Info->vkCode == 0x4D && ((GetKeyState(VK_LWIN) & 0x8000) || 
+                                            (GetKeyState(VK_RWIN) & 0x8000))) //屏敝 WIN+D 组合键(左右)
+            {
+                return TRUE;
+            }
+
+            if (Key_Info->vkCode == 0x44 && ((GetKeyState(VK_LWIN) & 0x8000) ||
+                                             (GetKeyState(VK_LWIN) & 0x8000)))  //屏敝 WIN+M 组合键(左右)
+            { 
+                return TRUE;
+            }
+
+            if (Key_Info->vkCode == 0x1b && GetKeyState(VK_CONTROL) & 0x8000) //屏敝 CTRL + ESC 组合键
+            {
+                return TRUE;
+            }
+
+            if (Key_Info->vkCode == VK_TAB && Key_Info->flags & LLKHF_ALTDOWN) //屏敝 ATL + TAB 组合键
+            {
+                return TRUE;
+            }
+
+             if (Key_Info->vkCode == VK_ESCAPE && Key_Info->flags & LLKHF_ALTDOWN) //屏敝 ATL + ESC 组合键
+            {
+                 return TRUE;
+            }
+
+        }
+    }
+
+    return CallNextHookEx(h_HotKey, nCode, wParam, lParam); //回调
+}
+
+ BOOL Hotkey_Install(DWORD ThreadID)
+ {
+    h_HotKey = SetWindowsHookEx(WH_KEYBOARD_LL, (HOOKPROC)Hotkey_Filter, //安装低级键盘钩子
+
+    GetModuleHandle("hotkey"), ThreadID);
+    if (NULL == h_HotKey)
+    {
+
+        MessageBox(NULL, "安装钩子出错 !", "error", MB_ICONSTOP);
+        return FALSE;
+    }
+   return TRUE;
+}
+
+BOOL Hotkey_UnInstall()
+{
+    UnhookWindowsHookEx(h_HotKey); //卸载钩子
+    return TRUE;
+}

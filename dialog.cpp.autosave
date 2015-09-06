@@ -143,7 +143,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wparam, LPARAM lparam)
 //钩子 回调函数
 void Dialog::HotKeyFunc(int ) {
 
-        qDebug() << "****" << rand();
+      qDebug() << "****" << rand();
 
      if (  this->isHidden() ) {
          this->show();

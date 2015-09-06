@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+#include(qxtglobalshortcut5/qxt.pri)
+
 QT       += core gui
 QT       += webkitwidgets
 
@@ -25,4 +27,3 @@ RESOURCES += \
     image.qrc
 
 
-include(qxtglobalshortcut5/qxt.pri)

@@ -6,7 +6,10 @@ CONFIG += qxt
 QXT += core gui widgets
 
 DEFINES += BUILD_QXT_CORE \
-    BUILD_QXT_GUI
+    BUILD_QXT_GUI \
+    QXT_DOXYGEN_RUN  \
+    QXT_STATIC
+
 
 DEPENDPATH +=  $$PWD/gui \
     $$PWD/core
@@ -16,11 +19,13 @@ INCLUDEPATH += $$PWD/core \
 HEADERS  += $$PWD/core/qxtglobal.h \
     $$PWD/gui/qxtglobalshortcut_p.h \
     $$PWD/gui/qxtglobalshortcut.h \
-    $$PWD/gui/qxtwindowsystem.h
+    $$PWD/gui/qxtwindowsystem.h \
+    $$PWD/gui/qxtwindowsystem_mac.h
 
     SOURCES  +=	$$PWD/core/qxtglobal.cpp \
         $$PWD/gui/qxtwindowsystem.cpp \
-        $$PWD/gui/qxtglobalshortcut.cpp
+        $$PWD/gui/qxtglobalshortcut.cpp \
+    $$PWD/gui/x11info.cpp
 
 unix:!macx {
         CONFIG += X11
