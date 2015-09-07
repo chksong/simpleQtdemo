@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>537</width>
-    <height>316</height>
+    <width>529</width>
+    <height>51</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="image.qrc">
+    <normaloff>:/log.png</normaloff>:/log.png</iconset>
   </property>
   <widget class="QPushButton" name="pushButton_search">
    <property name="geometry">
@@ -80,8 +84,8 @@
   <widget class="QToolButton" name="btHide">
    <property name="geometry">
     <rect>
-     <x>466</x>
-     <y>10</y>
+     <x>450</x>
+     <y>0</y>
      <width>61</width>
      <height>21</height>
     </rect>
@@ -99,6 +103,8 @@
    <header>QtWebKitWidgets/QWebView</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="image.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -35,7 +35,7 @@ Dialog::Dialog(QWidget *parent) :
 
     ui->webView->load(QUrl("http://m.chinaso.com"));
 
-    QIcon * icon= new QIcon(":/resizeApi.png") ;
+    QIcon * icon= new QIcon(":/111.png") ;
     setWindowIcon(*icon);
 
     m_trayIcon = new QSystemTrayIcon(this) ;
@@ -143,7 +143,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wparam, LPARAM lparam)
 //钩子 回调函数
 void Dialog::HotKeyFunc(int ) {
 
-        qDebug() << "****" << rand();
+      qDebug() << "****" << rand();
 
      if (  this->isHidden() ) {
          this->show();
