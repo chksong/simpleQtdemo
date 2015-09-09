@@ -58,6 +58,8 @@ protected:
     void virtual mouseMoveEvent(QMouseEvent *);
     void virtual mouseReleaseEvent(QMouseEvent  *);
 
+    void  setAutoStart(bool isAutoRun) ;
+
 };
 
 #endif // DIALOG_H

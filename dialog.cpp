@@ -14,6 +14,8 @@
 #include <QPalette>
 #include <QRect>
 
+#include <QSettings>
+
 
 #include <QDebug>
 //#include "qxtglobalshortcut5/gui/qxtglobalshortcut.h
@@ -83,6 +85,8 @@ Dialog::Dialog(QWidget *parent) :
 
    connect(ui->pushButton_hideShowWebView,&QPushButton::clicked ,this, &Dialog::HideShowWebView) ;
    connect(ui->pushButton_hideWindow,&QPushButton::clicked, this, &Dialog::hide);
+
+   setAutoStart(true) ;
 }
 
 Dialog::~Dialog()
@@ -302,5 +306,24 @@ void Dialog::HideShowWebView() {
         m_isShowWebView = true ;
 
         this->resize( QSize( 440, 267 ));
+    }
+}
+
+
+void Dialog::setAutoStart(bool isAutoRun)
+{
+    #define REG_RUN "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+
+    QString application_name = QApplication::applicationName() ;
+
+    QSettings *setting = new QSettings(REG_RUN,QSettings::NativeFormat) ;
+
+    if(isAutoRun) {
+        QString application_path = QApplication::applicationFilePath() ;
+          qDebug() <<"name==" << application_name << "   path=" <<  application_path << "\n" ;
+        setting->setValue(application_name , application_path.replace("/","\\"));
+    }
+    else {
+        setting->remove(application_name);
     }
 }
