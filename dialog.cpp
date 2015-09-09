@@ -11,6 +11,9 @@
 #include <QAction>
 #include <QTime>
 
+#include <QPalette>
+#include <QRect>
+
 
 #include <QDebug>
 //#include "qxtglobalshortcut5/gui/qxtglobalshortcut.h
@@ -42,6 +45,7 @@ Dialog::Dialog(QWidget *parent) :
     m_trayIcon->setIcon(*icon);
     m_trayIcon->show();
 
+    connect(ui->btHide2,&QPushButton::clicked,this ,&Dialog::hide) ;
 
     QAction *act_quit = new QAction(this) ;
     act_quit->setText("quit");
@@ -55,24 +59,29 @@ Dialog::Dialog(QWidget *parent) :
     menu->addAction(act_show) ;
     menu->addAction(act_quit) ;
     m_trayIcon->setContextMenu(menu);
-
-
-    connect(ui->btHide ,&QPushButton::clicked, this ,&Dialog::hide) ;
-
-
-//    QxtGlobalShortcut *shortcut = new QxtGlobalShortcut(this);
-//    shortcut->setShortcut(QKeySequence("Shift+1"));
 //    connect(shortcut, &QxtGlobalShortcut::activated,
 //        [=]() {qDebug() << "shortcut activated";});
 
 
-    // 退出在最后窗口关闭点击关闭时程序不关闭
+ // 退出在最后窗口关闭点击关闭时程序不关闭
  //   QApplication::setQuitOnLastWindowClosed(false) ;
+
     key_keep = NULL ;
-
     pMainDlg = this ;
-
     register_key_hook() ;
+
+   //去掉边框
+    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowOpacity(1);
+//    setAttribute(QT::WA_TransluceVntB);
+
+    QPalette   pal   = ui->pushButton_search->palette();
+    pal.setColor(QPalette::ButtonText,QColor(255,255,255));
+    ui->pushButton_search->setPalette(pal);
+
+   m_bisMoveable = false;
+
+   connect(ui->pushButton_hideShowWebView,&QPushButton::clicked ,this, &Dialog::HideShowWebView);
 }
 
 Dialog::~Dialog()
@@ -146,6 +155,9 @@ void Dialog::HotKeyFunc(int ) {
       qDebug() << "****" << rand();
 
      if (  this->isHidden() ) {
+
+         setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint) ;
+
          this->show();
      }
      else  {
@@ -240,3 +252,41 @@ LRESULT CALLBACK Hotkey_Filter(int nCode, WPARAM wParam, LPARAM lParam)
 //    UnhookWindowsHookEx(h_HotKey); //卸载钩子
 //    return TRUE;
 //}
+
+
+void Dialog::mousePressEvent(QMouseEvent *event)
+{
+    if(event->buttons() == Qt::LeftButton)
+    {
+        offset = event->globalPos() - pos();
+        QRect rect(0,0,this->size().width(),27);
+        //就是之前frame的大小
+
+        if( rect.contains(event->pos()))
+        {
+            m_bisMoveable = true;
+        }
+    }
+}
+
+void Dialog::mouseMoveEvent(QMouseEvent *event)
+{
+    if((event->buttons() & Qt::LeftButton) && m_bisMoveable)
+    {
+        move(event->globalPos() - offset);
+    }
+}
+
+void Dialog::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(m_bisMoveable)
+    {
+        m_bisMoveable = false;
+    }
+}
+
+
+
+void Dialog::HideShowWebView() {
+
+}

@@ -3,6 +3,8 @@
 
 #include <QDialog>
 #include <QSystemTrayIcon>
+#include <QPoint>
+#include <QMouseEvent>
 
 class Dialog ;
 
@@ -25,6 +27,7 @@ class Dialog : public QDialog
 private slots:
     void explore_web() ;
     void explore();
+    void HideShowWebView();
 
 public:
     explicit Dialog(QWidget *parent = 0);
@@ -43,6 +46,15 @@ public :
     }
 
    void HotKeyFunc(int) ;
+
+private:
+    QPoint offset; //记录 获取鼠标位置与窗口位置的差值
+    bool m_bisMoveable; //判断鼠标是否放在无标题窗口栏的标题栏范围内
+protected:
+    void virtual mousePressEvent(QMouseEvent *);
+    void virtual mouseMoveEvent(QMouseEvent *);
+    void virtual mouseReleaseEvent(QMouseEvent  *);
+
 };
 
 #endif // DIALOG_H
