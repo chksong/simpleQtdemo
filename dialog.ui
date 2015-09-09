@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>444</width>
+    <width>441</width>
     <height>267</height>
    </rect>
   </property>
@@ -23,7 +23,7 @@
   <widget class="QPushButton" name="pushButton_search">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>330</x>
      <y>10</y>
      <width>75</width>
      <height>31</height>
@@ -34,7 +34,8 @@
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(0, 85, 255);
-font: 10pt &quot;Agency FB&quot;;</string>
+font: 10pt &quot;Agency FB&quot;;
+border: none;</string>
    </property>
    <property name="text">
     <string>搜索</string>
@@ -48,7 +49,7 @@ font: 10pt &quot;Agency FB&quot;;</string>
     <rect>
      <x>50</x>
      <y>10</y>
-     <width>261</width>
+     <width>271</width>
      <height>31</height>
     </rect>
    </property>
@@ -61,7 +62,7 @@ font: 10pt &quot;Agency FB&quot;;</string>
     <rect>
      <x>10</x>
      <y>60</y>
-     <width>431</width>
+     <width>421</width>
      <height>201</height>
     </rect>
    </property>
@@ -94,10 +95,20 @@ font: 10pt &quot;Agency FB&quot;;</string>
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>28</y>
-     <width>31</width>
-     <height>20</height>
+     <y>30</y>
+     <width>21</width>
+     <height>16</height>
     </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(240, 240, 240);
+border: none;</string>
    </property>
    <property name="text">
     <string/>
@@ -110,20 +121,21 @@ font: 10pt &quot;Agency FB&quot;;</string>
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="btHide2">
+  <widget class="QPushButton" name="pushButton_hideWindow">
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>5</y>
-     <width>31</width>
-     <height>20</height>
+     <y>10</y>
+     <width>21</width>
+     <height>16</height>
     </rect>
    </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
    </property>
    <property name="styleSheet">
-    <string notr="true">selection-background-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(240, 240, 240);
+border: none;</string>
    </property>
    <property name="text">
     <string/>

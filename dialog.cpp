@@ -45,10 +45,8 @@ Dialog::Dialog(QWidget *parent) :
     m_trayIcon->setIcon(*icon);
     m_trayIcon->show();
 
-    connect(ui->btHide2,&QPushButton::clicked,this ,&Dialog::hide) ;
-
     QAction *act_quit = new QAction(this) ;
-    act_quit->setText("quit");
+    act_quit->setText(QString("close"));
     connect(act_quit, &QAction::triggered, this,&Dialog::close) ;
 
     QAction *act_show = new QAction(this) ;
@@ -61,7 +59,6 @@ Dialog::Dialog(QWidget *parent) :
     m_trayIcon->setContextMenu(menu);
 //    connect(shortcut, &QxtGlobalShortcut::activated,
 //        [=]() {qDebug() << "shortcut activated";});
-
 
  // 退出在最后窗口关闭点击关闭时程序不关闭
  //   QApplication::setQuitOnLastWindowClosed(false) ;
@@ -81,7 +78,8 @@ Dialog::Dialog(QWidget *parent) :
 
    m_bisMoveable = false;
 
-   connect(ui->pushButton_hideShowWebView,&QPushButton::clicked ,this, &Dialog::HideShowWebView);
+   connect(ui->pushButton_hideShowWebView,&QPushButton::clicked ,this, &Dialog::HideShowWebView) ;
+   connect(ui->pushButton_hideWindow,&QPushButton::clicked, this, &Dialog::hide);
 }
 
 Dialog::~Dialog()
@@ -90,9 +88,14 @@ Dialog::~Dialog()
     delete ui;
 }
 
+//打开浏览器 搜索
 void Dialog::explore_web()
 {
-    QDesktopServices::openUrl(QUrl("http://m.chinaso.com/")) ;
+    QString text = ui->lineEdit->text()  ;
+ //   qDebug() << text ;
+    QString str_text = QString("http://www.chinaso.com/search/pagesearch.htm?q=") + text ;
+
+    QDesktopServices::openUrl(QUrl(str_text )) ;
 }
 
 void Dialog::explore() {
