@@ -1,0 +1,83 @@
+IE浏览器（右键扩展功能总结版） 
+http://blog.csdn.net/tianshuai1111/article/details/7486707
+
+
+ 序言：大家是不是莫名其妙，我怎么什么都搀和上两脚。搞起这个高深的COM编程来了。呵呵……这是帮同学做的一个小东西，由于以前拿这个比赛过，今天由于业务需要又用上了，所以又拉我来做一下这个。都是兄弟，放下手中的活帮哥们做了。
+
+         需求：在IE菜单中，添加右键。点击右键调用javaScript，执行相应功能。
+
+         步骤：以管理员身份打开VS2005，新建ATL工程，
+
+动态获取当前位置，并写入注册表中
+
+
+
+
+
+[html] view plaincopy
+01.void OnChange()   
+02.{  
+03.      
+04.    WCHAR buf[128];  
+05.    GetCurrentDirectory(128,(LPTSTR)buf);  
+06.  
+07.    WCHAR name[14]=L"\\analyse.htm";  
+08.  
+09.    CRegKey key;    
+10.    key.Create(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Internet Explorer\\MenuExt\\&分析"));   
+11.  
+12.    wcscat(buf,name);  
+13.  
+14.    key.SetStringValue( _T("(默认)"), buf);   
+15.    key.SetDWORDValue(_T("Contexts"),48);  
+16.}  
+
+
+ ananlyse.htm 
+
+
+
+
+
+[html] view plaincopy
+01.<script language="JavaScript">  
+02.  var parentwin = external.menuArguments;  
+03.  var doc = parentwin.document;  
+04.  var sel = doc.selection;  
+05.  var rng = sel.createRange();  
+06.  var str = encodeURI(new String(rng.text));  
+07.  if(0 < str.length)  
+08.  {  
+09.    var url = "http://10.100.68.1/classify_analyse/query_emotion.php?content=" + str;  
+10.    openwindow(url, "情感分析对话框",800,600);  
+11.  } else {  
+12.    alert("请选择文本内容");  
+13.  }  
+14.function openwindow(url,name,iWidth,iHeight) {  
+15.    var iTop = (window.screen.availHeight - 30 - iHeight) / 2;  //获得窗口的垂直位置;   
+16.    var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;   //获得窗口的水平位置;   
+17.    var customed = "toolbar=no,menubar=no,scrollbars=yes,resizable=yes,location=no,status=no";  
+18.    var windowFeatures = "height=" + iHeight + ",innerHeight=" + iHeight + ",width=" + iWidth + ",innerWidth=" + iWidth + ",top=" + iTop + ",left=" + iLeft + "," + customed;  
+19.    window.open(url, name, windowFeatures);  
+20.}  
+21.</script>  
+
+
+注册dll的文件
+
+
+
+
+
+[html] view plaincopy
+01.copy analyse.htm %windir%     
+02.copy db_operation_pop.htm %windir%  
+03.regsvr32 sentiment_plugin.dll /s  
+
+
+总之，不容易把相对路径写上，还是用绝对路径简单。
+
+
+
+
+还有好多，不愿意总结了，就把关键的总结上来了。如果感兴趣，可以留言索要相关内容
