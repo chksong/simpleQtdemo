@@ -76,7 +76,10 @@ Dialog::Dialog(QWidget *parent) :
     pal.setColor(QPalette::ButtonText,QColor(255,255,255));
     ui->pushButton_search->setPalette(pal);
 
-   m_bisMoveable = false;
+    m_bisMoveable = false;
+
+    // 默认隐藏 webview
+    m_isShowWebView = false ;
 
    connect(ui->pushButton_hideShowWebView,&QPushButton::clicked ,this, &Dialog::HideShowWebView) ;
    connect(ui->pushButton_hideWindow,&QPushButton::clicked, this, &Dialog::hide);
@@ -292,4 +295,12 @@ void Dialog::mouseReleaseEvent(QMouseEvent *event)
 
 void Dialog::HideShowWebView() {
 
+    if( m_isShowWebView) {
+        m_isShowWebView = false ;
+         this->resize( QSize( 440, 52 ));
+    } else {
+        m_isShowWebView = true ;
+
+        this->resize( QSize( 440, 267 ));
+    }
 }

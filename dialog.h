@@ -50,6 +50,9 @@ public :
 private:
     QPoint offset; //记录 获取鼠标位置与窗口位置的差值
     bool m_bisMoveable; //判断鼠标是否放在无标题窗口栏的标题栏范围内
+
+    // 是否显示WebView
+    bool m_isShowWebView ;
 protected:
     void virtual mousePressEvent(QMouseEvent *);
     void virtual mouseMoveEvent(QMouseEvent *);

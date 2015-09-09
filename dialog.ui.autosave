@@ -42,7 +42,7 @@
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(85, 0, 255);
+    <string notr="true">background-color: rgb(0, 85, 255);
 font: 10pt &quot;Agency FB&quot;;
 border: none;</string>
    </property>
