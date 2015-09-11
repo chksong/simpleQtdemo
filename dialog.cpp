@@ -45,19 +45,28 @@ Dialog::Dialog(QWidget *parent) :
 
     m_trayIcon = new QSystemTrayIcon(this) ;
     m_trayIcon->setIcon(*icon);
+	m_trayIcon->setToolTip("中国搜索桌面工具");
     m_trayIcon->show();
 
     QAction *act_quit = new QAction(this) ;
     act_quit->setText(QString("close"));
-    connect(act_quit, &QAction::triggered, this,&Dialog::close) ;
+	connect(act_quit, &QAction::triggered, this, &Dialog::exitApplication);
 
     QAction *act_show = new QAction(this) ;
     act_show->setText(QString("显示窗口"));
     connect(act_show ,&QAction::triggered , this ,&Dialog::show) ;
 
+
+    QAction *act_disable_autoRun = new QAction(this) ;
+    act_disable_autoRun->setText(QString("禁止自动运行"));
+  //  disable_autoRun->setText(disable_autoRun);
+    connect(act_disable_autoRun, &QAction::triggered, this,&Dialog::disableAutoRun) ;
+
+
     QMenu  *menu = new QMenu(this) ;
     menu->addAction(act_show) ;
     menu->addAction(act_quit) ;
+   // menu->addAction(act_disable_autoRun);
     m_trayIcon->setContextMenu(menu);
 //    connect(shortcut, &QxtGlobalShortcut::activated,
 //        [=]() {qDebug() << "shortcut activated";});
@@ -70,7 +79,7 @@ Dialog::Dialog(QWidget *parent) :
     register_key_hook() ;
 
    //去掉边框
-    setWindowFlags(Qt::FramelessWindowHint);
+	setWindowFlags(Qt::FramelessWindowHint| Qt::Popup | Qt::Tool);
     setWindowOpacity(1);
 //    setAttribute(QT::WA_TransluceVntB);
 
@@ -166,7 +175,7 @@ void Dialog::HotKeyFunc(int ) {
 
      if (  this->isHidden() ) {
 
-         setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint) ;
+		 setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Popup | Qt::Tool);
 
          this->show();
      }
@@ -309,6 +318,10 @@ void Dialog::HideShowWebView() {
     }
 }
 
+void Dialog::disableAutoRun() {
+    setAutoStart(false);
+}
+
 
 void Dialog::setAutoStart(bool isAutoRun)
 {
@@ -326,4 +339,12 @@ void Dialog::setAutoStart(bool isAutoRun)
     else {
         setting->remove(application_name);
     }
+}
+
+
+void Dialog::exitApplication(){
+	qDebug()<< "exit \n";
+
+	QApplication::quit();
+
 }

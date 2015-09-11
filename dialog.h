@@ -28,6 +28,8 @@ private slots:
     void explore_web() ;
     void explore();
     void HideShowWebView();
+    void disableAutoRun() ;
+	void exitApplication();
 
 public:
     explicit Dialog(QWidget *parent = 0);
