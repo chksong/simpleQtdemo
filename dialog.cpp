@@ -74,6 +74,9 @@ Dialog::Dialog(QWidget *parent) :
  // 退出在最后窗口关闭点击关闭时程序不关闭
  //   QApplication::setQuitOnLastWindowClosed(false) ;
 
+
+	connect(m_trayIcon, &QSystemTrayIcon::activated, this, &Dialog::ShowWindowTop);
+
     key_keep = NULL ;
     pMainDlg = this ;
     register_key_hook() ;
@@ -107,6 +110,8 @@ Dialog::~Dialog()
 //打开浏览器 搜索
 void Dialog::explore_web()
 {
+
+	setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
     QString text = ui->lineEdit->text()  ;
  //   qDebug() << text ;
     QString str_text = QString("http://www.chinaso.com/search/pagesearch.htm?q=") + text ;
@@ -170,20 +175,25 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wparam, LPARAM lparam)
 
 //钩子 回调函数
 void Dialog::HotKeyFunc(int ) {
-
-      qDebug() << "****" << rand();
+      //qDebug() << "****" << rand();
 
      if (  this->isHidden() ) {
-
-		 setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint | Qt::Popup | Qt::Tool);
-
-         this->show();
+		 //Qt::WindowStaysOnTopHint |
+		 setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+		 this->activateWindow();
+		 this->show();
      }
      else  {
-         this->hide();
+	
+		 this->hide();
      }
+}
 
-
+void Dialog::ShowWindowTop()
+{
+	setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+	this->activateWindow();
+	this->show();
 }
 
 
@@ -317,6 +327,7 @@ void Dialog::HideShowWebView() {
         this->resize( QSize( 440, 267 ));
     }
 }
+
 
 void Dialog::disableAutoRun() {
     setAutoStart(false);
