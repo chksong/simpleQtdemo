@@ -28,6 +28,9 @@ private slots:
     void explore_web() ;
     void explore();
     void HideShowWebView();
+
+	void ShowWindowTop();
+
     void disableAutoRun() ;
 	void exitApplication();
 

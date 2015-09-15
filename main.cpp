@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QSharedMemory>
 #include <QMessageBox>
+#include <QDesktopWidget>
 
 int main(int argc, char *argv[])
 {
@@ -21,9 +22,17 @@ int main(int argc, char *argv[])
       sema.release();// 临界区
 
 
+
+
     QApplication a(argc, argv);
+	
+	QDesktopWidget* desktop = QApplication::desktop();
+
+
     Dialog w;
-    w.show();
+
+	w.move((desktop->width() - w.width()) / 2, (desktop->height() / 16));
+ //   w.show();
 
     return a.exec();
 }

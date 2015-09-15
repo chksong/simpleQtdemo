@@ -99,6 +99,8 @@ Dialog::Dialog(QWidget *parent) :
    connect(ui->pushButton_hideWindow,&QPushButton::clicked, this, &Dialog::hide);
 
    setAutoStart(true) ;
+  
+   this->hide();
 }
 
 Dialog::~Dialog()
