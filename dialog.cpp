@@ -20,14 +20,22 @@
 #include <QDebug>
 //#include "qxtglobalshortcut5/gui/qxtglobalshortcut.h
 
+#include <string>
+using namespace std;
+
 #include <Windows.h>
 HHOOK key_keep = NULL ;
+
 
 LRESULT CALLBACK Hotkey_Filter(int code, WPARAM wparam, LPARAM lparam);
 
 #define KEY_BOARD_KEYUP 0x80000000
 
 Dialog  *pMainDlg = NULL ;
+
+/////////////////////////////////////////////////////////////
+
+#define  REG_RUN_HOT_KEY "HKEY_CURRENT_USER\\Software\\Chinaso"
 
 
 Dialog::Dialog(QWidget *parent) :
@@ -45,33 +53,46 @@ Dialog::Dialog(QWidget *parent) :
 
     m_trayIcon = new QSystemTrayIcon(this) ;
     m_trayIcon->setIcon(*icon);
-	m_trayIcon->setToolTip("ä¸­å›½æœç´¢æ¡Œé¢å·¥å…·");
+	m_trayIcon->setToolTip(QString::fromLocal8Bit("ÖĞ¹úËÑË÷×ÀÃæ¹¤¾ß"));
     m_trayIcon->show();
 
+
     QAction *act_quit = new QAction(this) ;
-    act_quit->setText(QString("close"));
+   // act_quit->setText(QString("ÍË³ö"));
+	act_quit->setText(QString::fromLocal8Bit("ÍË³ö"));
 	connect(act_quit, &QAction::triggered, this, &Dialog::exitApplication);
 
     QAction *act_show = new QAction(this) ;
-    act_show->setText(QString("æ˜¾ç¤ºçª—å£"));
+	act_show->setText(QString::fromLocal8Bit("ÏÔÊ¾´°¿Ú"));
     connect(act_show ,&QAction::triggered , this ,&Dialog::show) ;
 
 
     QAction *act_disable_autoRun = new QAction(this) ;
-    act_disable_autoRun->setText(QString("ç¦æ­¢è‡ªåŠ¨è¿è¡Œ"));
-  //  disable_autoRun->setText(disable_autoRun);
-    connect(act_disable_autoRun, &QAction::triggered, this,&Dialog::disableAutoRun) ;
+	act_disable_autoRun->setText(QString::fromLocal8Bit("¿ª»ú×Ô¶¯ÔËĞĞ"));
+	act_disable_autoRun->setCheckable(true);
+	act_disable_autoRun->setChecked(checkIsAutoRun());
+    connect(act_disable_autoRun, &QAction::triggered, this,&Dialog::enableAutoRun) ;
+
+
+	QAction *act_hotKey = new QAction(this);
+	act_hotKey->setText(QString::fromLocal8Bit("ÆôÓÃÈÈ¼ü"));
+	act_hotKey->setCheckable(true);
+	act_hotKey->setChecked(checkIsHotKey());
+
+	connect(act_hotKey, &QAction::triggered, this, &Dialog::enableHotKey);
 
 
     QMenu  *menu = new QMenu(this) ;
+	menu->addAction(act_hotKey);
+	menu->addAction(act_disable_autoRun);
     menu->addAction(act_show) ;
     menu->addAction(act_quit) ;
-   // menu->addAction(act_disable_autoRun);
+
     m_trayIcon->setContextMenu(menu);
 //    connect(shortcut, &QxtGlobalShortcut::activated,
 //        [=]() {qDebug() << "shortcut activated";});
 
- // é€€å‡ºåœ¨æœ€åçª—å£å…³é—­ç‚¹å‡»å…³é—­æ—¶ç¨‹åºä¸å…³é—­
+ // ÍË³öÔÚ×îºó´°¿Ú¹Ø±Õµã»÷¹Ø±ÕÊ±³ÌĞò²»¹Ø±Õ
  //   QApplication::setQuitOnLastWindowClosed(false) ;
 
 
@@ -79,9 +100,16 @@ Dialog::Dialog(QWidget *parent) :
 
     key_keep = NULL ;
     pMainDlg = this ;
-    register_key_hook() ;
 
-   //å»æ‰è¾¹æ¡†
+	if (checkIsHotKey()) {
+		register_key_hook();
+	}
+	
+	//if (checkIsAutoRun()) {
+	//	setAutoStart(true);
+	//}
+
+   //È¥µô±ß¿ò
 	setWindowFlags(Qt::FramelessWindowHint| Qt::Popup | Qt::Tool);
     setWindowOpacity(1);
 //    setAttribute(QT::WA_TransluceVntB);
@@ -92,13 +120,13 @@ Dialog::Dialog(QWidget *parent) :
 
     m_bisMoveable = false;
 
-    // é»˜è®¤éšè— webview
+    // Ä¬ÈÏÒş²Ø webview
     m_isShowWebView = false ;
 
    connect(ui->pushButton_hideShowWebView,&QPushButton::clicked ,this, &Dialog::HideShowWebView) ;
    connect(ui->pushButton_hideWindow,&QPushButton::clicked, this, &Dialog::hide);
 
-   setAutoStart(true) ;
+  
   
    this->hide();
 }
@@ -109,7 +137,7 @@ Dialog::~Dialog()
     delete ui;
 }
 
-//æ‰“å¼€æµè§ˆå™¨ æœç´¢
+//´ò¿ªä¯ÀÀÆ÷ ËÑË÷
 void Dialog::explore_web()
 {
 
@@ -175,7 +203,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wparam, LPARAM lparam)
     return CallNextHookEx(0, code, wparam, lparam);
 }
 
-//é’©å­ å›è°ƒå‡½æ•°
+//¹³×Ó »Øµ÷º¯Êı
 void Dialog::HotKeyFunc(int ) {
       //qDebug() << "****" << rand();
 
@@ -203,7 +231,7 @@ void Dialog::register_key_hook()
 {
 //   if(key_keep)return;
 //      key_keep = SetWindowsHookEx(WH_KEYBOARD,KeyboardProc,NULL,GetCurrentThreadId());
-    //å®‰è£…ä½çº§é”®ç›˜é’©å­
+    //°²×°µÍ¼¶¼üÅÌ¹³×Ó
   // key_keep=  SetWindowsHookEx(WH_KEYBOARD_LL, Hotkey_Filter,GetModuleHandle(TEXT("HookDll")),GetCurrentThreadId());
      key_keep=  SetWindowsHookEx(WH_KEYBOARD_LL, Hotkey_Filter,NULL ,NULL);
    if (NULL == key_keep)
@@ -222,38 +250,38 @@ LRESULT CALLBACK Hotkey_Filter(int nCode, WPARAM wParam, LPARAM lParam)
     KBDLLHOOKSTRUCT *Key_Info = (KBDLLHOOKSTRUCT*)lParam;
     if (HC_ACTION == nCode)
     {
-        if (WM_KEYDOWN == wParam /*|| WM_SYSKEYDOWN*/)  //å¦‚æœæŒ‰é”®ä¸ºæŒ‰ä¸‹çŠ¶æ€
+        if (WM_KEYDOWN == wParam /*|| WM_SYSKEYDOWN*/)  //Èç¹û°´¼üÎª°´ÏÂ×´Ì¬
         {
            // qDebug() << "****" << rand();
-            if  (Key_Info->vkCode == VK_LWIN || Key_Info->vkCode == VK_RWIN )    //å±æ• WIN(å·¦å³) é”®
+            if  (Key_Info->vkCode == VK_LWIN || Key_Info->vkCode == VK_RWIN )    //ÆÁ±Ö WIN(×óÓÒ) ¼ü
             {
                 pMainDlg->HotKeyFunc(0);
                 return TRUE ;
             }
 
 //            if (Key_Info->vkCode == 0x4D && ((GetKeyState(VK_LWIN) & 0x8000) ||
-//                                            (GetKeyState(VK_RWIN) & 0x8000))) //å±æ• WIN+D ç»„åˆé”®(å·¦å³)
+//                                            (GetKeyState(VK_RWIN) & 0x8000))) //ÆÁ±Ö WIN+D ×éºÏ¼ü(×óÓÒ)
 //            {
 //                return TRUE;
 //            }
 
 //            if (Key_Info->vkCode == 0x44 && ((GetKeyState(VK_LWIN) & 0x8000) ||
-//                                             (GetKeyState(VK_RWIN) & 0x8000)))  //å±æ• WIN+M ç»„åˆé”®(å·¦å³)
+//                                             (GetKeyState(VK_RWIN) & 0x8000)))  //ÆÁ±Ö WIN+M ×éºÏ¼ü(×óÓÒ)
 //            {
 //                return TRUE;
 //            }
 
-//            if (Key_Info->vkCode == 0x1b && GetKeyState(VK_CONTROL) & 0x8000) //å±æ• CTRL + ESC ç»„åˆé”®
+//            if (Key_Info->vkCode == 0x1b && GetKeyState(VK_CONTROL) & 0x8000) //ÆÁ±Ö CTRL + ESC ×éºÏ¼ü
 //            {
 //                return TRUE;
 //            }
 
-//            if (Key_Info->vkCode == VK_TAB && Key_Info->flags & LLKHF_ALTDOWN) //å±æ• ATL + TAB ç»„åˆé”®
+//            if (Key_Info->vkCode == VK_TAB && Key_Info->flags & LLKHF_ALTDOWN) //ÆÁ±Ö ATL + TAB ×éºÏ¼ü
 //            {
 //                return TRUE;
 //            }
 
-//             if (Key_Info->vkCode == VK_ESCAPE && Key_Info->flags & LLKHF_ALTDOWN) //å±æ• ATL + ESC ç»„åˆé”®
+//             if (Key_Info->vkCode == VK_ESCAPE && Key_Info->flags & LLKHF_ALTDOWN) //ÆÁ±Ö ATL + ESC ×éºÏ¼ü
 //            {
 //                 return TRUE;
 //            }
@@ -261,18 +289,18 @@ LRESULT CALLBACK Hotkey_Filter(int nCode, WPARAM wParam, LPARAM lParam)
         }
     }
 
-    return CallNextHookEx(key_keep, nCode, wParam, lParam); //å›è°ƒ
+    return CallNextHookEx(key_keep, nCode, wParam, lParam); //»Øµ÷
 }
 
 // BOOL Hotkey_Install(DWORD ThreadID)
 // {
-//    h_HotKey = SetWindowsHookEx(WH_KEYBOARD_LL, (HOOKPROC)Hotkey_Filter, //å®‰è£…ä½çº§é”®ç›˜é’©å­
+//    h_HotKey = SetWindowsHookEx(WH_KEYBOARD_LL, (HOOKPROC)Hotkey_Filter, //°²×°µÍ¼¶¼üÅÌ¹³×Ó
 
 //    GetModuleHandle("hotkey"), ThreadID);
 //    if (NULL == h_HotKey)
 //    {
 
-//        MessageBox(NULL, "å®‰è£…é’©å­å‡ºé”™ !", "error", MB_ICONSTOP);
+//        MessageBox(NULL, "°²×°¹³×Ó³ö´í !", "error", MB_ICONSTOP);
 //        return FALSE;
 //    }
 //   return TRUE;
@@ -280,7 +308,7 @@ LRESULT CALLBACK Hotkey_Filter(int nCode, WPARAM wParam, LPARAM lParam)
 
 //BOOL Hotkey_UnInstall()
 //{
-//    UnhookWindowsHookEx(h_HotKey); //å¸è½½é’©å­
+//    UnhookWindowsHookEx(h_HotKey); //Ğ¶ÔØ¹³×Ó
 //    return TRUE;
 //}
 
@@ -291,7 +319,7 @@ void Dialog::mousePressEvent(QMouseEvent *event)
     {
         offset = event->globalPos() - pos();
         QRect rect(0,0,this->size().width(),27);
-        //å°±æ˜¯ä¹‹å‰frameçš„å¤§å°
+        //¾ÍÊÇÖ®Ç°frameµÄ´óĞ¡
 
         if( rect.contains(event->pos()))
         {
@@ -331,8 +359,9 @@ void Dialog::HideShowWebView() {
 }
 
 
-void Dialog::disableAutoRun() {
-    setAutoStart(false);
+void Dialog::enableAutoRun(bool isAutoRun) {
+	qDebug() << isAutoRun << "\n";
+	setAutoStart(isAutoRun);
 }
 
 
@@ -354,10 +383,50 @@ void Dialog::setAutoStart(bool isAutoRun)
     }
 }
 
+bool Dialog::checkIsAutoRun() {
+	#define REG_RUN "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+
+	QString application_name = QApplication::applicationName();
+
+	QSettings *setting = new QSettings(REG_RUN, QSettings::NativeFormat);
+
+
+	return setting->contains(application_name);
+}
+
+
 
 void Dialog::exitApplication(){
 	qDebug()<< "exit \n";
 
 	QApplication::quit();
 
+}
+
+
+
+void Dialog::enableHotKey(bool isHot)  {
+	return setHotKey(isHot);
+}
+
+void Dialog::setHotKey(bool isHotKey) {
+	QSettings *setting = new QSettings(REG_RUN_HOT_KEY, QSettings::NativeFormat);
+
+	if (isHotKey) {
+		setting->setValue("ishotKey",  true);
+		register_key_hook();
+	}
+	else {
+		setting->setValue("ishotKey", false);
+		unregister_key_hook();
+	}
+}
+
+bool Dialog::checkIsHotKey() {
+ 
+	QSettings *setting = new QSettings(REG_RUN_HOT_KEY, QSettings::NativeFormat);
+
+	
+	return setting->value("ishotKey").toBool();
+	
 }

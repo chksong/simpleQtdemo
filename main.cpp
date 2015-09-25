@@ -10,9 +10,9 @@ int main(int argc, char *argv[])
 {
     //进程间互斥， 只能打开一个程序
     // 确保只运行一次
-      QSystemSemaphore sema("JAMKey",1,QSystemSemaphore::Open);
+      QSystemSemaphore sema("chinasoTool",1,QSystemSemaphore::Open);
       sema.acquire();// 在临界区操作共享内存 SharedMemory
-      QSharedMemory mem("SystemObject");// 全局对象名
+      QSharedMemory mem("SystemObject_chinaso");// 全局对象名
       if (!mem.create(1))// 如果全局对象以存在则退出
        {
   //        QMessageBox::information(0, MESSAGEBOXTXT,"An instance has already been running.");

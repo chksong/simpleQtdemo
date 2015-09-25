@@ -31,7 +31,9 @@ private slots:
 
 	void ShowWindowTop();
 
-    void disableAutoRun() ;
+    void enableAutoRun(bool ) ;
+	void enableHotKey(bool);
+
 	void exitApplication();
 
 public:
@@ -64,6 +66,10 @@ protected:
     void virtual mouseReleaseEvent(QMouseEvent  *);
 
     void  setAutoStart(bool isAutoRun) ;
+	bool  checkIsAutoRun();
+
+	void  setHotKey(bool isHotKey);
+	bool  checkIsHotKey();
 
 };
 
